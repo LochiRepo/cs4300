@@ -1,5 +1,5 @@
 #Declare the values
-def get_values():
+def getVal():
 
 #Tests the string, char, int, and floats
     txt = "Oh the year was 1778"
@@ -13,3 +13,4 @@ def get_values():
 
 #Return each of these values
     return divisor, low, txt + exclaim, is_valid, product
+
