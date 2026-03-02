@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Movie Theater{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="/movies/">Movies</a> |
+        <a href="/history/">My Bookings</a> |
+        <a href="/api/">API</a>
+    </nav>
+
+    <hr>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

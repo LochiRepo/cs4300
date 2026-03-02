@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends 'bookings/base.html' %}
+
+{% block title %}Booking History{% endblock %}
+
+{% block content %}
   <h1>Your Booking History</h1>
   {% for booking in bookings %}
     <div>
@@ -8,5 +10,4 @@
       <p>Date: {{ booking.bookTime }}</p>
     </div>
   {% endfor %}
-</body>
-</html>
+{% endblock %}

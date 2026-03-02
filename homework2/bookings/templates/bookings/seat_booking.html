@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends 'bookings/base.html' %}
+
+{% block title %}Book a Seat{% endblock %}
+
+{% block content %}
   <h1>Book a Seat for {{ movie.movieTitle }}</h1>
   <form method="POST">
     {% csrf_token %}
@@ -14,5 +16,4 @@
     {% endfor %}
     <button type="submit">Confirm Booking</button>
   </form>
-</body>
-</html>
+{% endblock %}
