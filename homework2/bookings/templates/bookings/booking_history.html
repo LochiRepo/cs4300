@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Your Booking History</h1>
+  {% for booking in bookings %}
+    <div>
+      <p>Movie: {{ booking.bookMovie.movieTitle }}</p>
+      <p>Date: {{ booking.bookTime }}</p>
+    </div>
+  {% endfor %}
+</body>
+</html>

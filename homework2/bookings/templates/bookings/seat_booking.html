@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Book a Seat for {{ movie.movieTitle }}</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {% for seat in seats %}
+      <div>
+        <input type="radio" name="seat" value="{{ seat.id }}"
+          {% if seat.seatBook %}disabled{% endif %}>
+        Seat {{ seat.seatNumber }}
+        {% if seat.seatBook %}(Booked){% else %}(Available){% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit">Confirm Booking</button>
+  </form>
+</body>
+</html>
