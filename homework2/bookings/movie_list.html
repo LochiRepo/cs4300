@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Movies</h1>
+  {% for movie in movies %}
+    <div>
+      <h2>{{ movie.movieTitle }}</h2>
+      <p>{{ movie.movieDescription }}</p>
+      <p>Released: {{ movie.movieRelease }}</p>
+      <p>Duration: {{ movie.movieDuration }} mins</p>
+      <a href="/book/{{ movie.id }}">Book a Seat</a>
+    </div>
+  {% endfor %}
+</body>
+</html>
