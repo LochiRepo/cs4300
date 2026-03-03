@@ -1,16 +1,257 @@
 {% extends 'bookings/base.html' %}
+{% load static %}
 
-{% block title %}Movie List{% endblock %}
+{% block title %}Movie List - Fandangle{% endblock %}
+
+{% block hero %}
+<div class="hero-banner">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 style="font-family:'Bebas Neue',cursive; font-size:3rem; letter-spacing:3px; color:#fff; margin-bottom:0.5rem;">
+                    Your Night Out <span style="color:var(--fandangle-orange);">Starts Here</span>
+                </h1>
+                <p style="color:var(--fandangle-muted); font-size:1.1rem; margin-bottom:1.5rem;">
+                    Book tickets for the latest movies — fast, easy, no fees.
+                </p>
+                <div class="d-flex gap-2">
+                    <input type="text" class="form-control search-input" placeholder="Search movies..." style="max-width:320px;">
+                    <button class="btn-primary-fandangle" style="white-space:nowrap;">
+                        <i class="bi bi-search me-1"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
-  <h1>Movies</h1>
-  {% for movie in movies %}
-    <div>
-      <h2>{{ movie.movieTitle }}</h2>
-      <p>{{ movie.movieDescription }}</p>
-      <p>Released: {{ movie.movieRelease }}</p>
-      <p>Duration: {{ movie.movieDuration }} mins</p>
-      <a href="/book/{{ movie.id }}">Book a Seat</a>
+
+<!-- ── NOW PLAYING ── -->
+<div class="section-heading mt-4">Now Playing</div>
+
+<div class="row g-4 mb-5">
+
+    <!-- Lawrence of Arabia -->
+    <div class="col-sm-6 col-lg-4">
+        <div class="card-fandangle h-100 d-flex flex-column">
+            <div style="position:relative; overflow:hidden;">
+                <img src="{% static 'images/lawrence.jpg' %}"
+                     alt="Lawrence of Arabia poster"
+                     style="width:100%; height:380px; object-fit:cover; display:block;">
+                <div style="position:absolute; top:10px; left:10px;">
+                    <span class="badge-fandangle">Now Playing</span>
+                </div>
+                <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); border-radius:4px; padding:4px 8px; font-size:0.8rem; color:#facc15;">
+                    <i class="bi bi-star-fill me-1"></i>8.3
+                </div>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+                <h5 style="font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:1px; color:#fff; margin-bottom:0.25rem;">
+                    Lawrence of Arabia
+                </h5>
+                <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:0.75rem;">
+                    1962 &nbsp;·&nbsp; PG &nbsp;·&nbsp; 3h 48m &nbsp;·&nbsp; Drama / Adventure
+                </div>
+                <p style="color:var(--fandangle-muted); font-size:0.85rem; flex-grow:1;">
+                    The story of T.E. Lawrence, the English officer who successfully united and led the diverse, often warring, Arab tribes during World War I.
+                </p>
+                <div class="d-flex gap-2 mt-2">
+                    <a href="/book/1/" class="btn-primary-fandangle text-decoration-none text-center flex-grow-1" style="padding:0.5rem;">
+                        <i class="bi bi-ticket me-1"></i>Get Tickets
+                    </a>
+                    <button class="btn-outline-fandangle" style="padding:0.5rem 0.75rem;">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  {% endfor %}
+
+    <!-- Brokeback Mountain -->
+    <div class="col-sm-6 col-lg-4">
+        <div class="card-fandangle h-100 d-flex flex-column">
+            <div style="position:relative; overflow:hidden;">
+                <img src="{% static 'images/brokeback.jpg' %}"
+                     alt="Brokeback Mountain poster"
+                     style="width:100%; height:380px; object-fit:cover; display:block;">
+                <div style="position:absolute; top:10px; left:10px;">
+                    <span class="badge-fandangle">Now Playing</span>
+                </div>
+                <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); border-radius:4px; padding:4px 8px; font-size:0.8rem; color:#facc15;">
+                    <i class="bi bi-star-fill me-1"></i>7.7
+                </div>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+                <h5 style="font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:1px; color:#fff; margin-bottom:0.25rem;">
+                    Brokeback Mountain
+                </h5>
+                <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:0.75rem;">
+                    2005 &nbsp;·&nbsp; R &nbsp;·&nbsp; 2h 14m &nbsp;·&nbsp; Drama / Romance
+                </div>
+                <p style="color:var(--fandangle-muted); font-size:0.85rem; flex-grow:1;">
+                    The story of a forbidden and secretive relationship between two cowboys and their lives over the years.
+                </p>
+                <div class="d-flex gap-2 mt-2">
+                    <a href="/book/2/" class="btn-primary-fandangle text-decoration-none text-center flex-grow-1" style="padding:0.5rem;">
+                        <i class="bi bi-ticket me-1"></i>Get Tickets
+                    </a>
+                    <button class="btn-outline-fandangle" style="padding:0.5rem 0.75rem;">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daybreak -->
+    <div class="col-sm-6 col-lg-4">
+        <div class="card-fandangle h-100 d-flex flex-column">
+            <div style="position:relative; overflow:hidden;">
+                <img src="{% static 'images/DayBreak.png' %}"
+                     alt="Daybreak poster"
+                     style="width:100%; height:380px; object-fit:cover; display:block;"
+                     onerror="this.src='https://placehold.co/500x750/1a2235/7a8aaa?text=Daybreak'">
+                <div style="position:absolute; top:10px; left:10px;">
+                    <span class="badge-fandangle">Now Playing</span>
+                </div>
+                <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); border-radius:4px; padding:4px 8px; font-size:0.8rem; color:#facc15;">
+                    <i class="bi bi-star-fill me-1"></i>N/A
+                </div>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+                <h5 style="font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:1px; color:#fff; margin-bottom:0.25rem;">
+                    Daybreak
+                </h5>
+                <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:0.75rem;">
+                    2026 &nbsp;·&nbsp; NR &nbsp;·&nbsp; Drama
+                </div>
+                <p style="color:var(--fandangle-muted); font-size:0.85rem; flex-grow:1;">
+                    A new story unfolds at the break of dawn.
+                </p>
+                <div class="d-flex gap-2 mt-2">
+                    <a href="/book/3/" class="btn-primary-fandangle text-decoration-none text-center flex-grow-1" style="padding:0.5rem;">
+                        <i class="bi bi-ticket me-1"></i>Get Tickets
+                    </a>
+                    <button class="btn-outline-fandangle" style="padding:0.5rem 0.75rem;">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr class="divider-orange">
+
+<!-- ── COMING SOON ── -->
+<div class="section-heading mt-4">Coming Soon</div>
+
+<div class="row g-4 mb-5">
+
+    <!-- Gladiator -->
+    <div class="col-sm-6 col-lg-4">
+        <div class="card-fandangle h-100 d-flex flex-column" style="opacity:0.85;">
+            <div style="position:relative; overflow:hidden;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/f/fb/Gladiator_%282000_film_poster%29.png"
+                     alt="Gladiator poster"
+                     style="width:100%; height:380px; object-fit:cover; display:block; filter:grayscale(20%);">
+                <div style="position:absolute; top:10px; left:10px;">
+                    <span style="background:var(--fandangle-red); color:#fff; font-weight:700; font-size:0.7rem; letter-spacing:1px; text-transform:uppercase; border-radius:3px; padding:0.3em 0.6em;">
+                        Coming Soon
+                    </span>
+                </div>
+                <!-- dark overlay -->
+                <div style="position:absolute; inset:0; background:rgba(0,0,0,0.25);"></div>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+                <h5 style="font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:1px; color:#fff; margin-bottom:0.25rem;">
+                    Gladiator 3
+                </h5>
+                <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:0.75rem;">
+                    2026 &nbsp;·&nbsp; TBD &nbsp;·&nbsp; Action / Drama
+                </div>
+                <p style="color:var(--fandangle-muted); font-size:0.85rem; flex-grow:1;">
+                    The saga continues. A new champion rises in the arena — blood, glory, and vengeance await.
+                </p>
+                <div class="mt-2">
+                    <button class="btn-outline-fandangle w-100" disabled style="opacity:0.6; cursor:not-allowed;">
+                        <i class="bi bi-bell me-1"></i>Notify Me
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brokeback Mountain 2 -->
+    <div class="col-sm-6 col-lg-4">
+        <div class="card-fandangle h-100 d-flex flex-column" style="opacity:0.85;">
+            <div style="position:relative; overflow:hidden;">
+                <img src="https://placehold.co/500x750/1a2235/7a8aaa?text=?"
+                     alt="Brokeback Mountain 2 coming soon"
+                     style="width:100%; height:380px; object-fit:cover; display:block; filter:grayscale(40%);">
+                <div style="position:absolute; top:10px; left:10px;">
+                    <span style="background:var(--fandangle-red); color:#fff; font-weight:700; font-size:0.7rem; letter-spacing:1px; text-transform:uppercase; border-radius:3px; padding:0.3em 0.6em;">
+                        Coming Soon
+                    </span>
+                </div>
+                <div style="position:absolute; inset:0; background:rgba(0,0,0,0.35);"></div>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+                <h5 style="font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:1px; color:#fff; margin-bottom:0.25rem;">
+                    Brokeback Mountain 2
+                </h5>
+                <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:0.75rem;">
+                    2027 &nbsp;·&nbsp; TBD
+                </div>
+                <p style="color:var(--fandangle-muted); font-size:0.85rem; flex-grow:1;">
+                    Details for this upcoming feature are being kept under wraps. Stay tuned.
+                </p>
+                <div class="mt-2">
+                    <button class="btn-outline-fandangle w-100" disabled style="opacity:0.6; cursor:not-allowed;">
+                        <i class="bi bi-bell me-1"></i>Notify Me
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stacy's Mom: The Movie -->
+    <div class="col-sm-6 col-lg-4">
+        <div class="card-fandangle h-100 d-flex flex-column" style="opacity:0.85;">
+            <div style="position:relative; overflow:hidden;">
+                <img src="{% static 'images/stacysmom.jpg' %}"
+                     alt="Stacy's Mom: The Movie"
+                     style="width:100%; height:380px; object-fit:cover; object-position:top; display:block; filter:grayscale(15%);"
+                     onerror="this.src='https://placehold.co/500x750/1a2235/f5a623?text=Stacy%27s+Mom'">
+                <div style="position:absolute; top:10px; left:10px;">
+                    <span style="background:var(--fandangle-red); color:#fff; font-weight:700; font-size:0.7rem; letter-spacing:1px; text-transform:uppercase; border-radius:3px; padding:0.3em 0.6em;">
+                        Coming Soon
+                    </span>
+                </div>
+                <div style="position:absolute; inset:0; background:rgba(0,0,0,0.2);"></div>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+                <h5 style="font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:1px; color:#fff; margin-bottom:0.25rem;">
+                    Stacy's Mom: The Movie
+                </h5>
+                <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:0.75rem;">
+                    2027 &nbsp;·&nbsp; TBD &nbsp;·&nbsp; Comedy / Romance
+                </div>
+                <p style="color:var(--fandangle-muted); font-size:0.85rem; flex-grow:1;">
+                    She's got it going on, and she finally gets the big-screen treatment  deserves.
+                </p>
+                <div class="mt-2">
+                    <button class="btn-outline-fandangle w-100" disabled style="opacity:0.6; cursor:not-allowed;">
+                        <i class="bi bi-bell me-1"></i>Notify Me
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}

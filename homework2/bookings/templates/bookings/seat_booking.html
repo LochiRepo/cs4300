@@ -1,19 +1,455 @@
 {% extends 'bookings/base.html' %}
+{% load static %}
 
-{% block title %}Book a Seat{% endblock %}
+{% block title %}Book Seats - {{ movie.movieTitle }} - Fandangle{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ── SCREEN ── */
+    .screen-wrap {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .screen {
+        display: inline-block;
+        width: 70%;
+        height: 14px;
+        background: linear-gradient(to bottom, #f5a623, #e8931a);
+        border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        box-shadow: 0 0 40px rgba(245,166,35,0.5), 0 0 80px rgba(245,166,35,0.2);
+        margin-bottom: 0.4rem;
+    }
+    .screen-label {
+        font-size: 0.7rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--fandangle-muted);
+    }
+
+    /* ── SEAT GRID ── */
+    .theatre-wrap {
+        overflow-x: auto;
+        padding: 1rem 0 2rem;
+    }
+    .seat-grid {
+        display: inline-block;
+        min-width: 600px;
+    }
+    .seat-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+    .row-label {
+        font-family: 'Bebas Neue', cursive;
+        font-size: 1rem;
+        color: var(--fandangle-muted);
+        width: 22px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    .seat-spacer {
+        width: 28px;
+        flex-shrink: 0;
+    }
+
+    /* ── SEAT BUTTON ── */
+    .seat {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px 6px 3px 3px;
+        border: 1.5px solid #2e3f58;
+        background-color: #1e2d45;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        position: relative;
+        flex-shrink: 0;
+    }
+    .seat::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 3px;
+        right: 3px;
+        height: 3px;
+        background: #162030;
+        border-radius: 0 0 3px 3px;
+    }
+    .seat:hover:not(.booked):not(.selected) {
+        background-color: #f5a623;
+        border-color: #f5a623;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245,166,35,0.4);
+    }
+    .seat.selected {
+        background-color: #f5a623;
+        border-color: #e8931a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245,166,35,0.5);
+    }
+    .seat.booked {
+        background-color: #1e3a6e;
+        border-color: #1e4080;
+        cursor: not-allowed;
+    }
+    .seat.confirmed {
+        background-color: #1e4080;
+        border-color: #2563eb;
+        box-shadow: 0 0 8px rgba(37,99,235,0.5);
+        cursor: not-allowed;
+    }
+
+    /* ── LEGEND ── */
+    .legend {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--fandangle-muted);
+    }
+    .legend-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        border: 1.5px solid;
+    }
+
+    /* ── SELECTION PANEL ── */
+    .selection-panel {
+        background: var(--fandangle-card);
+        border: 1px solid var(--fandangle-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        position: sticky;
+        top: 80px;
+    }
+    .selected-seat-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(245,166,35,0.12);
+        border: 1px solid rgba(245,166,35,0.3);
+        color: var(--fandangle-orange);
+        border-radius: 4px;
+        padding: 4px 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin: 3px;
+    }
+    .selected-seat-tag .remove-seat {
+        cursor: pointer;
+        opacity: 0.7;
+        font-size: 0.75rem;
+    }
+    .selected-seat-tag .remove-seat:hover {
+        opacity: 1;
+    }
+    #confirm-btn {
+        background-color: var(--fandangle-orange);
+        color: var(--fandangle-navy);
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 4px;
+        padding: 0.75rem;
+        width: 100%;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        margin-top: 1rem;
+    }
+    #confirm-btn:hover:not(:disabled) {
+        background-color: var(--fandangle-orange2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(245,166,35,0.35);
+    }
+    #confirm-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* ── SUCCESS TOAST ── */
+    .toast-confirm {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #22c55e;
+        color: #fff;
+        padding: 0.85rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        z-index: 9999;
+        white-space: nowrap;
+    }
+    .toast-confirm.show {
+        transform: translateX(-50%) translateY(0);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-  <h1>Book a Seat for {{ movie.movieTitle }}</h1>
-  <form method="POST">
-    {% csrf_token %}
-    {% for seat in seats %}
-      <div>
-        <input type="radio" name="seat" value="{{ seat.id }}"
-          {% if seat.seatBook %}disabled{% endif %}>
-        Seat {{ seat.seatNumber }}
-        {% if seat.seatBook %}(Booked){% else %}(Available){% endif %}
-      </div>
-    {% endfor %}
-    <button type="submit">Confirm Booking</button>
-  </form>
+<div class="row mt-4">
+
+    <!-- ── LEFT: THEATRE ── -->
+    <div class="col-lg-8">
+
+        <!-- Movie header -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div>
+                <h2 style="font-family:'Bebas Neue',cursive; font-size:2rem; letter-spacing:2px; margin-bottom:0.1rem;">
+                    {{ movie.movieTitle }}
+                </h2>
+                <div style="color:var(--fandangle-muted); font-size:0.85rem;">
+                    <i class="bi bi-clock me-1"></i>{{ movie.movieDuration }} mins
+                    &nbsp;·&nbsp;
+                    <i class="bi bi-calendar me-1"></i>{{ movie.movieRelease }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen -->
+        <div class="screen-wrap">
+            <div class="screen"></div>
+            <div class="screen-label">Screen</div>
+        </div>
+
+        <!-- Seat Grid -->
+        <div class="theatre-wrap text-center">
+            <div class="seat-grid" id="seat-grid">
+                <!-- Rows generated by JS -->
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#1e2d45; border-color:#2e3f58;"></div>
+                Available
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#f5a623; border-color:#e8931a;"></div>
+                Selected
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#1e3a6e; border-color:#1e4080;"></div>
+                Taken
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#1e4080; border-color:#2563eb;"></div>
+                Just Booked
+            </div>
+        </div>
+    </div>
+
+    <!-- ── RIGHT: SELECTION PANEL ── -->
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="selection-panel">
+            <h5 style="font-family:'Bebas Neue',cursive; font-size:1.5rem; letter-spacing:1px; margin-bottom:0.25rem;">
+                Your Seats
+            </h5>
+            <div style="color:var(--fandangle-muted); font-size:0.8rem; margin-bottom:1rem;">
+                Click seats on the diagram to select them
+            </div>
+
+            <hr style="border-color:var(--fandangle-border); margin:0.75rem 0;">
+
+            <div id="selected-seats-display" style="min-height:48px;">
+                <span style="color:var(--fandangle-muted); font-size:0.85rem;" id="no-seats-msg">
+                    No seats selected
+                </span>
+            </div>
+
+            <hr style="border-color:var(--fandangle-border); margin:0.75rem 0;">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <span style="color:var(--fandangle-muted); font-size:0.85rem;">Seats selected</span>
+                <span id="seat-count" style="font-weight:700; color:var(--fandangle-orange);">0</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <span style="color:var(--fandangle-muted); font-size:0.85rem;">Movie</span>
+                <span style="font-size:0.85rem; font-weight:600;">{{ movie.movieTitle }}</span>
+            </div>
+
+            <button id="confirm-btn" disabled onclick="confirmBooking()">
+                <i class="bi bi-ticket-perforated me-2"></i>Confirm Booking
+            </button>
+
+            <div style="color:var(--fandangle-muted); font-size:0.75rem; text-align:center; margin-top:0.75rem;">
+                <i class="bi bi-shield-check me-1"></i>Free cancellation up to 2 hours before showtime
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-confirm" id="toast">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    Booking confirmed! Enjoy the show.
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ── CONFIG ──
+    const ROWS = 8;       // A–H
+    const COLS = 20;      // 1–20
+    const ROW_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+    // Pre-booked seats (from Django context — seats already taken)
+    const preBooked = new Set([
+        {% for seat in seats %}
+            {% if seat.seatBook %}'{{ seat.seatNumber }}',{% endif %}
+        {% endfor %}
+    ]);
+
+    let selectedSeats = new Set();
+    let confirmedSeats = new Set();
+
+    // ── BUILD GRID ──
+    function buildGrid() {
+        const grid = document.getElementById('seat-grid');
+        grid.innerHTML = '';
+
+        // Column numbers header
+        const header = document.createElement('div');
+        header.className = 'seat-row';
+        header.innerHTML = '<div class="row-label"></div>';
+        // aisle spacer at col 10
+        for (let c = 1; c <= COLS; c++) {
+            if (c === 11) {
+                const sp = document.createElement('div');
+                sp.className = 'seat-spacer';
+                header.appendChild(sp);
+            }
+            const lbl = document.createElement('div');
+            lbl.style.cssText = 'width:28px;text-align:center;font-size:0.6rem;color:var(--fandangle-muted);flex-shrink:0;';
+            lbl.textContent = c;
+            header.appendChild(lbl);
+        }
+        grid.appendChild(header);
+
+        for (let r = 0; r < ROWS; r++) {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'seat-row';
+
+            // Row label
+            const lbl = document.createElement('div');
+            lbl.className = 'row-label';
+            lbl.textContent = ROW_LABELS[r];
+            rowEl.appendChild(lbl);
+
+            for (let c = 1; c <= COLS; c++) {
+                // Aisle gap after col 10
+                if (c === 11) {
+                    const sp = document.createElement('div');
+                    sp.className = 'seat-spacer';
+                    rowEl.appendChild(sp);
+                }
+
+                const seatId = ROW_LABELS[r] + c;
+                const btn = document.createElement('button');
+                btn.className = 'seat';
+                btn.dataset.seat = seatId;
+                btn.title = `Seat ${seatId}`;
+
+                if (preBooked.has(seatId) || confirmedSeats.has(seatId)) {
+                    btn.classList.add(confirmedSeats.has(seatId) ? 'confirmed' : 'booked');
+                    btn.disabled = true;
+                } else if (selectedSeats.has(seatId)) {
+                    btn.classList.add('selected');
+                }
+
+                btn.addEventListener('click', () => toggleSeat(seatId, btn));
+                rowEl.appendChild(btn);
+            }
+
+            grid.appendChild(rowEl);
+        }
+    }
+
+    // ── TOGGLE SEAT ──
+    function toggleSeat(seatId, btn) {
+        if (selectedSeats.has(seatId)) {
+            selectedSeats.delete(seatId);
+            btn.classList.remove('selected');
+        } else {
+            selectedSeats.add(seatId);
+            btn.classList.add('selected');
+        }
+        updatePanel();
+    }
+
+    // ── UPDATE PANEL ──
+    function updatePanel() {
+        const display = document.getElementById('selected-seats-display');
+        const noMsg = document.getElementById('no-seats-msg');
+        const count = document.getElementById('seat-count');
+        const btn = document.getElementById('confirm-btn');
+
+        count.textContent = selectedSeats.size;
+        btn.disabled = selectedSeats.size === 0;
+
+        if (selectedSeats.size === 0) {
+            display.innerHTML = '<span style="color:var(--fandangle-muted); font-size:0.85rem;" id="no-seats-msg">No seats selected</span>';
+        } else {
+            display.innerHTML = '';
+            selectedSeats.forEach(seatId => {
+                const tag = document.createElement('span');
+                tag.className = 'selected-seat-tag';
+                tag.innerHTML = `<i class="bi bi-geo-alt-fill"></i>${seatId} <span class="remove-seat" onclick="removeSeat('${seatId}')">✕</span>`;
+                display.appendChild(tag);
+            });
+        }
+    }
+
+    // ── REMOVE SEAT FROM PANEL ──
+    function removeSeat(seatId) {
+        selectedSeats.delete(seatId);
+        // Update the seat button visually
+        const btn = document.querySelector(`[data-seat="${seatId}"]`);
+        if (btn) btn.classList.remove('selected');
+        updatePanel();
+    }
+
+    // ── CONFIRM BOOKING ──
+    function confirmBooking() {
+        if (selectedSeats.size === 0) return;
+
+        // Move selected → confirmed (turn blue)
+        selectedSeats.forEach(seatId => {
+            confirmedSeats.add(seatId);
+            const btn = document.querySelector(`[data-seat="${seatId}"]`);
+            if (btn) {
+                btn.classList.remove('selected');
+                btn.classList.add('confirmed');
+                btn.disabled = true;
+            }
+        });
+
+        selectedSeats.clear();
+        updatePanel();
+
+        // Show toast
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ── INIT ──
+    buildGrid();
+</script>
 {% endblock %}
