@@ -319,9 +319,18 @@
                     <a href="/history/" class="nav-link-custom">
                         <i class="bi bi-ticket-perforated me-1"></i>My Bookings
                     </a>
-                    <a href="/api/" class="nav-link-custom">
-                        <i class="bi bi-code-slash me-1"></i>API
-                    </a>
+                        {% if user.is_authenticated %}
+                        <span class="nav-link" style="color:var(--fandangle-muted); font-size:0.85rem;">
+                            <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                        </span>
+                        <a href="/admin/logout/?next=/movies/" class="btn-outline-fandangle" style="padding:0.4rem 1rem; font-size:0.85rem;">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sign Out
+                        </a>
+                    {% else %}
+                        <a href="/admin/login/?next=/movies/" class="btn-primary-fandangle" style="padding:0.4rem 1rem; font-size:0.85rem;">
+                            <i class="bi bi-person me-1"></i>Sign In
+                        </a>
+                    {% endif %}
                     <a href="/movies/" class="nav-link-custom btn-nav-tickets ms-2">
                         <i class="bi bi-ticket me-1"></i>Get Tickets
                     </a>
