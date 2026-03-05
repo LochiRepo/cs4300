@@ -1,0 +1,5 @@
+{
+    "python.defaultInterpreterPath": "/home/student/cs4300/homework2/myenv/bin/python3",
+    "livePreview.serverRoot": "/",
+    "livePreview.portNumber": 3000
+}
