@@ -1,0 +1,72 @@
+README
+
+This is a Django-based movie theater booking application with a Fandango-inspired UI, RESTful API, and seat selection. This is built out with multiple movie listings for both current and upcoming movies, and allow users to log in.
+
+Most of the page was written by Claude writing the lionshare of the HTML, CSS, and testing. I strung the files together, setup the structure with AI assistance, and then setup the API and Render tools needed to access the file live.
+
+Requirements
+
+- Python 3.12+
+- pip
+
+
+## Setup
+
+1. Clone the repository
+
+git clone 
+cd cs4300/homework2
+
+
+2. Create and activate the virtual environment
+
+python3 -m venv myenv
+source myenv/bin/activate
+
+
+3. Install dependencies
+
+pip install -r requirements.txt
+
+
+4. Run migrations
+
+python manage.py migrate
+
+
+5. Create a superuser (for admin access)
+
+python manage.py createsuperuser
+
+
+6. Load static files
+
+python manage.py collectstatic --no-input
+
+
+Running the App
+
+python manage.py runserver 0.0.0.0:3000
+
+
+Then open a browser and go to:
+
+http://localhost:3000/movies/
+
+From here, you can access all of the other files
+
+
+Admin login
+
+Log in at `http://localhost:3000/admin/` with your superuser credentials to manage movies, seats, and bookings.
+
+To add movies with posters:
+1. Go to `http://localhost:3000/admin/bookings/movie/`
+2. Click **Add Movie**
+3. Fill in title, description, release date, duration, and upload a poster
+
+---
+
+Running Tests
+
+pytest bookings/tests/ -v
