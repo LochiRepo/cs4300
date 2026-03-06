@@ -5,6 +5,10 @@ from datetime import timedelta
 from .models import Movie, Seat, Booking
 from .serializers import MovieSerializer, SeatSerializer, BookingSerializer
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+def seat_booking(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
 
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
@@ -32,7 +36,7 @@ def movie_list(request):
     return render(request, 'bookings/movie_list.html', {'movies': movies})
 
 def seat_booking(request, movie_id):
-    movie = Movie.objects.get(id=movie_id)
+    movie = get_object_or_404(Movie, id=movie_id)
     booked_seat_numbers = Booking.objects.filter(
         movieReference=movie
     ).values_list('seatReference__seatNumber', flat=True)

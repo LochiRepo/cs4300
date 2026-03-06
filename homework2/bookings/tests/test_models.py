@@ -168,3 +168,40 @@ def test_seat_number_max_length():
     seat = Seat(seatNumber='A' * 11)
     with pytest.raises(ValidationError):
         seat.full_clean()
+
+
+# ── PARAMETRIZED SEAT VALIDATION ──────────────────────────────────────────────
+
+@pytest.mark.parametrize("bad_status", [
+    'invalid', 'BOOKED', 'Available', '', 'reserved123', 'null'
+])
+@pytest.mark.django_db
+def test_invalid_seat_statuses_rejected(bad_status):
+    seat = Seat(seatNumber='A1', bookingStatus=bad_status)
+    with pytest.raises(ValidationError):
+        seat.full_clean()
+
+@pytest.mark.parametrize("valid_status", ['available', 'booked', 'reserved'])
+@pytest.mark.django_db
+def test_valid_seat_statuses_accepted(valid_status):
+    seat = Seat(seatNumber='A1', bookingStatus=valid_status)
+    seat.full_clean()  # Should not raise
+
+@pytest.mark.parametrize("seat_number", [
+    'A1', 'H20', 'E15', 'B10', 'D5'
+])
+@pytest.mark.django_db
+def test_valid_seat_numbers(seat_number):
+    seat = Seat.objects.create(seatNumber=seat_number)
+    assert seat.seatNumber == seat_number
+
+@pytest.mark.parametrize("duration", [1, 60, 120, 228, 360])
+@pytest.mark.django_db
+def test_movie_various_durations(duration):
+    movie = Movie.objects.create(
+        movieTitle=f'Test Movie {duration}',
+        movieDescription='desc',
+        releaseDate=date(2024, 1, 1),
+        duration=duration
+    )
+    assert movie.duration == duration
